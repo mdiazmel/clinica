@@ -173,10 +173,14 @@ def execute():
     parser._optionals.title = OPTIONAL_TITLE
 
     sub_parser = parser.add_subparsers(metavar='')
+    parser.add_argument("-V", "--version",
+                        dest='version',
+                        action='store_true', default=False,
+                        help="Clinica's installed version")
     parser.add_argument("-v", "--verbose",
                         dest='verbose',
                         action='store_true', default=False,
-                        help='Verbose: print all messages to the console')
+                        help='Print verbose message to the standard output')
     parser.add_argument("-l", "--logname",
                         dest='logname',
                         default="clinica.log",
@@ -406,9 +410,14 @@ def execute():
     """
     args = None
     unknown_args = None
+
     try:
         argcomplete.autocomplete(parser)
         args, unknown_args = parser.parse_known_args()
+        if (args.version):
+           import clinica
+           print(f"Clinica version is: {clinica.__version__}")
+           exit(0)
         if unknown_args:
             if ('--verbose' in unknown_args) or ('-v' in unknown_args):
                 cprint("Verbose detected")
